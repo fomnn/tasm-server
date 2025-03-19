@@ -1,16 +1,36 @@
 {
-	"name": "server",
-	"scripts": {
-		"dev": "wrangler dev",
-		"deploy": "wrangler deploy --minify",
-		"cf-typegen": "wrangler types --env-interface CloudflareBindings"
-	},
-	"dependencies": {
-		"hono": "^4.7.4"
-	},
-	"devDependencies": {
-		"@cloudflare/workers-types": "^4.20250313.0",
-		"wrangler": "^4.0.0"
-	},
-	"packageManager": "pnpm@10.6.3+sha512.bb45e34d50a9a76e858a95837301bfb6bd6d35aea2c5d52094fa497a467c43f5c440103ce2511e9e0a2f89c3d6071baac3358fc68ac6fb75e2ceb3d2736065e6"
+  "name": "server",
+  "packageManager": "pnpm@10.6.3+sha512.bb45e34d50a9a76e858a95837301bfb6bd6d35aea2c5d52094fa497a467c43f5c440103ce2511e9e0a2f89c3d6071baac3358fc68ac6fb75e2ceb3d2736065e6",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --minify",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.4.3",
+    "@prisma/adapter-d1": "^6.5.0",
+    "@prisma/client": "6.5.0",
+    "hono": "^4.7.4",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^4.10.1",
+    "@types/node": "^22.13.10",
+    "eslint": "^9.22.0",
+    "jiti": "^2.4.2",
+    "prisma": "6.5.0",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2",
+    "wrangler": "^4.0.0"
+  },
+  "pnpm": {
+    "ignoredBuiltDependencies": [
+      "esbuild"
+    ],
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
 }

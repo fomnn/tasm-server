@@ -1,9 +1,13 @@
-import { Hono } from 'hono'
+import { cors } from "hono/cors";
+import { prettyJSON } from "hono/pretty-json";
+import routers from "./app";
+import createRouter from "./lib/hono";
 
-const app = new Hono<{ Bindings: CloudflareBindings }>()
+const app = createRouter();
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
+app.use(cors());
+app.use(prettyJSON());
 
-export default app
+app.route("/", routers);
+
+export default app;
