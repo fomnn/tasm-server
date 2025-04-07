@@ -44,7 +44,6 @@ export const profilePictureRouter = createRouter()
         userId,
       },
       select: {
-        // TODO: column for profile picture in profile table?
         profilePictureUrl: true,
         id: true,
       },
@@ -57,7 +56,7 @@ export const profilePictureRouter = createRouter()
     }
 
     try {
-      await bucket.put(filepath, file);
+      const obj = await bucket.put(filepath, file);
 
       await prisma.profiles.update({
         where: {
@@ -67,8 +66,10 @@ export const profilePictureRouter = createRouter()
           profilePictureUrl: url,
         },
       });
+
       return c.json({
         message: "success",
+        filekey: obj?.key,
       });
     }
     catch (e) {
