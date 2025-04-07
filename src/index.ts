@@ -1,13 +1,12 @@
 import { cors } from "hono/cors";
-import { prettyJSON } from "hono/pretty-json";
+// import { showRoutes } from "hono/dev";
 import routers from "./app";
-import createRouter from "./lib/hono";
+import { createRouter } from "./helpers/hono";
 
 const app = createRouter();
 
-app.use(cors());
-app.use(prettyJSON());
+app.use("*", cors());
 
-app.route("/", routers);
+app.route("/api", routers);
 
 export default app;

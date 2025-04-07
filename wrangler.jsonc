@@ -4,17 +4,45 @@
  */
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "server",
+  "name": "tasm-server",
   "main": "src/index.ts",
   "compatibility_date": "2025-03-13",
+  "compatibility_flags": ["nodejs_compat"],
   "observability": {
     "enabled": true
+  },
+  "vars": {
+    "API_HOST": "http://localhost:8787"
+  },
+  "env": {
+    "dev": {
+      "vars": {
+        "API_HOST": "http://localhost:8787"
+      }
+    },
+    "prod": {
+      "vars": {
+        "API_HOST": "https://tasm-server.fathurrahmannotoy.workers.dev"
+      }
+    }
   },
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "task-management-db",
       "database_id": "e37e0058-b6d1-4021-b16b-05f1d74ec096"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "tasm_kv",
+      "id": "22ed179b9b464126908ee961c3c8bfd5"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "bucket_name": "tasm-bucket",
+      "binding": "tasm_bucket"
     }
   ]
   /**

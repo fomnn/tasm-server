@@ -22,11 +22,7 @@ pnpx prisma migrate diff \
 ```
 
 ```shell
-pnpx prisma migrate diff \
-  --from-local-d1 \
-  --to-schema-datamodel ./prisma/schema.prisma \
-  --script \
-  --output [path]
+pnpx prisma migrate diff --from-local-d1 --to-schema-datamodel ./prisma/schema.prisma --script --output [path]
 ```
 
 ```shell

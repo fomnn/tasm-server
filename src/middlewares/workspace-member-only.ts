@@ -1,6 +1,7 @@
 import type { Context, Next } from "hono";
+import factory from "../helpers/hono";
 
-export default async function workspaceMemberOnly(c: Context, next: Next) {
+export const workspaceMemberOnly = factory.createMiddleware(async (c: Context, next: Next) => {
   const prisma = c.get("prisma");
   const { id: userId } = c.get("jwtPayload");
   const workspaceId = c.req.param("workspaceId");
@@ -19,4 +20,4 @@ export default async function workspaceMemberOnly(c: Context, next: Next) {
   }
 
   await next();
-}
+});

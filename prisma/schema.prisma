@@ -33,12 +33,12 @@ model Profiles {
   id     String @id @default(cuid())
   userId String
 
-  email     String
-  username  String?
-  name      String
-  bio       String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  email             String
+  username          String?
+  name              String
+  profilePictureUrl String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   User Users @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
@@ -56,6 +56,35 @@ model Workspaces {
   Files            Files[]
 }
 
+model WorkspaceMembers {
+  id          String @id @default(cuid())
+  userId      String
+  workspaceId String
+
+  role      Role
+  job       String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Workspace Workspaces @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  User      Users      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Activities {
+  id          String @id @default(cuid())
+  workspaceId String
+  userId      String
+
+  title       String
+  description String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  User      Users      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Workspace Workspaces @relation(fields: [workspaceId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
 model Projects {
   id          String @id @default(cuid())
   workspaceId String
@@ -67,34 +96,6 @@ model Projects {
 
   Workspace Workspaces @relation(fields: [workspaceId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Tasks     Tasks[]
-}
-
-model WorkspaceMembers {
-  id     String @id @default(cuid())
-  userId String
-  workspaceId String
-
-  role        Role
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  Workspace Workspaces @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  User      Users      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-}
-
-model Activities {
-  id          String  @id @default(cuid())
-  workspaceId String
-  userId      String?
-
-  title       String
-  description String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  User      Users?     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Workspace Workspaces @relation(fields: [workspaceId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model Tasks {

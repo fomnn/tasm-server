@@ -1,14 +1,14 @@
 import { zValidator } from "@hono/zod-validator";
 import { jwt } from "hono/jwt";
-import createRouter from "../lib/hono";
-import workspaceMemberOnly from "../middlewares/workspace-member-only";
-import { createActivitySchema } from "../validators/activity-schemas";
+import { createRouter } from "../helpers/hono";
+import { workspaceMemberOnly } from "../middlewares/workspace-member-only";
+import { createActivitySchema } from "../validators/activity.schema";
 
 export const workspaceActivityRouter = createRouter()
   .basePath("/workspaces/:workspaceId/activities")
   .use("*", (c, next) => {
     const jwtMiddleware = jwt({
-      secret: c.env.JWT_SECRET,
+      secret: c.env.JWT_ACCESS_SECRET,
     });
 
     return jwtMiddleware(c, next);
@@ -27,9 +27,7 @@ export const workspaceActivityRouter = createRouter()
       },
     });
 
-    return c.json({
-      activities,
-    });
+    return c.json(activities);
   })
   .post(
     "/",

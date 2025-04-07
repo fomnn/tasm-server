@@ -1,31 +1,33 @@
-import authRouter from "./apis/auth-router";
-import { profileRouter } from "./apis/profile-router";
-import { workspaceActivityRouter } from "./apis/workspace-activity-router";
-import { workspaceMemberRouter } from "./apis/workspace-member-router";
-import { workspaceProjectRouter } from "./apis/workspace-project-router";
-import { workspaceProjectTaskRouter } from "./apis/workspace-project-task-router";
-import { workspaceRouter } from "./apis/workspace-router";
-import createRouter from "./lib/hono";
-import { usePrisma } from "./lib/prisma";
+import { createRouter } from "./helpers/hono";
+import authRouter from "./routes/auth.router";
+import { imageRouter } from "./routes/image.router";
+import { profilePictureRouter } from "./routes/profile-picture.router";
+import { profileRouter } from "./routes/profile.router";
+import { userActivityRouter } from "./routes/user-activity.router";
+import { userTaskRouter } from "./routes/user-task.router";
+import { workspaceActivityRouter } from "./routes/workspace-activity.router";
+import { workspaceMemberRouter } from "./routes/workspace-member.router";
+import { workspaceProjectTaskAssigneeRouter } from "./routes/workspace-project-task-assignee.router";
+import { workspaceProjectTaskRouter } from "./routes/workspace-project-task.router";
+import { workspaceProjectRouter } from "./routes/workspace-project.router";
+import { workspaceTaskRouter } from "./routes/workspace-task.router";
+import { workspaceRouter } from "./routes/workspace.router";
 
-const routers = createRouter().basePath("/api");
+const routers = createRouter();
 
-routers.get("/", async (c) => {
-  const prisma = usePrisma(c.env.DB);
-
-  const user = await prisma.users.findMany();
-
-  return c.json({
-    user,
-  });
-});
-
+routers.route("/", userTaskRouter);
 routers.route("/", authRouter);
 routers.route("/", workspaceRouter);
 routers.route("/", profileRouter);
+routers.route("/", userActivityRouter);
 routers.route("/", workspaceProjectRouter);
 routers.route("/", workspaceActivityRouter);
 routers.route("/", workspaceProjectRouter);
 routers.route("/", workspaceProjectTaskRouter);
 routers.route("/", workspaceMemberRouter);
+routers.route("/", workspaceTaskRouter);
+routers.route("/", workspaceProjectTaskAssigneeRouter);
+routers.route("/", profilePictureRouter);
+routers.route("/", imageRouter);
+
 export default routers;

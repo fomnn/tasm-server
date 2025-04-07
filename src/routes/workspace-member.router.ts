@@ -1,14 +1,14 @@
 import { zValidator } from "@hono/zod-validator";
 import { jwt } from "hono/jwt";
-import createRouter from "../lib/hono";
-import workspaceMemberOnly from "../middlewares/workspace-member-only";
-import { createWorkspaceMemberSchema, updateWorkspaceMemberSchema } from "../validators/workspace-member-schemas";
+import { createRouter } from "../helpers/hono";
+import { workspaceMemberOnly } from "../middlewares/workspace-member-only";
+import { createWorkspaceMemberSchema, updateWorkspaceMemberSchema } from "../validators/workspace-member.schema";
 
 export const workspaceMemberRouter = createRouter()
   .basePath("/workspaces/:workspaceId/members")
   .use("*", (c, next) => {
     const jwtMiddleware = jwt({
-      secret: c.env.JWT_SECRET,
+      secret: c.env.JWT_ACCESS_SECRET,
     });
 
     return jwtMiddleware(c, next);
@@ -16,9 +16,33 @@ export const workspaceMemberRouter = createRouter()
   .use("*", workspaceMemberOnly)
   .get("/", async (c) => {
     const prisma = c.get("prisma");
+    const withName = c.req.query("withName");
 
     const workspaceId = c.req.param("workspaceId");
 
+    if (withName) {
+      const members = await prisma.workspaceMembers.findMany({
+        where: {
+          workspaceId,
+        },
+        include: {
+          User: {
+            select: {
+              Profile: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      return c.json(members.map(m => ({
+        ...m,
+        name: m.User.Profile[0].name,
+      })));
+    }
     const members = await prisma.workspaceMembers.findMany({
       where: {
         workspaceId,

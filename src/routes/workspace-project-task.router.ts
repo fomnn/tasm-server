@@ -1,14 +1,14 @@
 import { zValidator } from "@hono/zod-validator";
 import { jwt } from "hono/jwt";
-import createRouter from "../lib/hono";
-import workspaceMemberOnly from "../middlewares/workspace-member-only";
-import { createTaskSchema, updateTaskSchema } from "../validators/task-schemas";
+import { createRouter } from "../helpers/hono";
+import { workspaceMemberOnly } from "../middlewares/workspace-member-only";
+import { createTaskSchema, updateTaskSchema } from "../validators/task.schema";
 
 export const workspaceProjectTaskRouter = createRouter()
   .basePath("/workspaces/:workspaceId/projects/:projectId/tasks")
   .use("*", (c, next) => {
     const jwtMiddleware = jwt({
-      secret: c.env.JWT_SECRET,
+      secret: c.env.JWT_ACCESS_SECRET,
     });
 
     return jwtMiddleware(c, next);
@@ -21,6 +21,9 @@ export const workspaceProjectTaskRouter = createRouter()
     const projects = await prisma.tasks.findMany({
       where: {
         projectId,
+      },
+      orderBy: {
+        updatedAt: "desc",
       },
     });
 
@@ -139,9 +142,7 @@ export const workspaceProjectTaskRouter = createRouter()
         },
       });
 
-      return c.json({
-        task,
-      });
+      return c.json(task);
     },
   )
   .delete(

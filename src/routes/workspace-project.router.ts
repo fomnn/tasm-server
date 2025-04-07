@@ -1,14 +1,15 @@
+import type { Projects } from "@prisma/client";
 import { zValidator } from "@hono/zod-validator";
 import { jwt } from "hono/jwt";
-import createRouter from "../lib/hono";
-import workspaceMemberOnly from "../middlewares/workspace-member-only";
-import { createProjectSchema, updateProjectSchema } from "../validators/project-schemas";
+import { createRouter } from "../helpers/hono";
+import { workspaceMemberOnly } from "../middlewares/workspace-member-only";
+import { createProjectSchema, updateProjectSchema } from "../validators/project.schema";
 
 export const workspaceProjectRouter = createRouter()
   .basePath("workspaces/:workspaceId/projects")
   .use("*", (c, next) => {
     const jwtMiddleware = jwt({
-      secret: c.env.JWT_SECRET,
+      secret: c.env.JWT_ACCESS_SECRET,
     });
 
     return jwtMiddleware(c, next);
@@ -16,14 +17,53 @@ export const workspaceProjectRouter = createRouter()
   .use("*", workspaceMemberOnly)
   .get("/", async (c) => {
     const prisma = c.get("prisma");
-
     const workspaceId = c.req.param("workspaceId");
+    const status = c.req.query("status");
 
     const projects = await prisma.projects.findMany({
       where: {
         workspaceId,
       },
     });
+
+    if (status) {
+      const projectsWithStatus: (Projects & {
+        isFinished: boolean;
+      })[] = [];
+
+      for (const project of projects) {
+        const tasks = await prisma.tasks.findMany({
+          where: {
+            projectId: project.id,
+          },
+        });
+
+        if (tasks.length === 0) {
+          projectsWithStatus.push({
+            ...project,
+            isFinished: false,
+          });
+          continue;
+        }
+
+        const done = tasks.every(task => task.stage === "DONE");
+
+        if (done) {
+          projectsWithStatus.push({
+            ...project,
+            isFinished: true,
+          });
+        }
+        else {
+          projectsWithStatus.push({
+            ...project,
+            isFinished: false,
+          });
+        }
+      }
+
+      return c.json(projectsWithStatus);
+    }
 
     return c.json(projects);
   })
