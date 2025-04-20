@@ -1,6 +1,7 @@
 import type { MyJWTPayload } from "../helpers/hono";
 import { zValidator } from "@hono/zod-validator";
 import { decode, jwt } from "hono/jwt";
+import { digest } from "ohash";
 import { z } from "zod";
 import { createRouter } from "../helpers/hono";
 import { deleteRefreshToken, getRefreshToken, saveRefreshToken } from "../helpers/refreshToken";
@@ -38,7 +39,7 @@ authRouter.post(
       }, 404);
     }
 
-    const isPasswordValid = user.password === password;
+    const isPasswordValid = digest(user.password) === password;
 
     if (!isPasswordValid) {
       return c.json({
@@ -100,7 +101,7 @@ authRouter.post(
     const user = await prisma.users.create({
       data: {
         email,
-        password,
+        password: digest(password),
         Profile: {
           create: {
             name,

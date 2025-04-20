@@ -6,8 +6,8 @@ import { createRouter } from "./helpers/hono";
 
 const app = createRouter();
 
-app.use("*", cors());
-app.use("*", logger());
+app.use(cors());
+// app.use(logger());
 
 app.route("/api", routers);
 

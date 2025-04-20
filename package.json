@@ -10,28 +10,32 @@
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4.3",
-    "@prisma/adapter-d1": "^6.5.0",
-    "@prisma/client": "6.5.0",
+    "@prisma/adapter-d1": "^6.6.0",
+    "@prisma/client": "6.6.0",
     "cryptr": "^6.3.0",
-    "hono": "^4.7.5",
+    "hono": "^4.7.7",
+    "ohash": "^2.0.11",
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^4.11.0",
-    "@types/node": "^22.13.11",
-    "eslint": "^9.23.0",
+    "@antfu/eslint-config": "^4.12.0",
+    "@types/node": "^22.14.1",
+    "eslint": "^9.25.0",
     "jiti": "^2.4.2",
-    "prisma": "6.5.0",
+    "prisma": "6.6.0",
     "tsx": "^4.19.3",
-    "typescript": "^5.8.2",
-    "wrangler": "^4.4.0"
+    "typescript": "^5.8.3",
+    "wrangler": "^4.12.0"
   },
   "pnpm": {
     "ignoredBuiltDependencies": [
       "esbuild"
     ],
     "onlyBuiltDependencies": [
-      "esbuild"
+      "@prisma/client",
+      "@prisma/engines",
+      "esbuild",
+      "prisma"
     ]
   }
 }
